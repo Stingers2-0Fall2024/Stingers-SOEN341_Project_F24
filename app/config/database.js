@@ -1,3 +1,5 @@
+// Done by Ali
+
 // Sequelize is called to interact with databases
 const {Sequelize}=require('sequelize');
 
