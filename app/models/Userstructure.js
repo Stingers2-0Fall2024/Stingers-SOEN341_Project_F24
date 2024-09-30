@@ -1,3 +1,6 @@
+// Done by Ali
+
+
 const { DataTypes, NUMBER } = require('sequelize');
 const sequelize = require('../config/database');
 
