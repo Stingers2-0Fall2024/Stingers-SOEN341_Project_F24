@@ -6,7 +6,7 @@ const User = require('../models/Userstructure');
 const isConcordiaEmail = (email) => /@(?:live\.)?concordia\.ca$/i.test(email);
 
 // Registers the user (hash password so that it doesnt get compromised, creates user in database)
-const registerUser=async (email, password, role = 'student') => {
+const registerUser=async (email, password, role = 'student', studentId, name) => {
   if (!isConcordiaEmail(email)){
     throw new Error("Not concordia student")
   }
@@ -15,9 +15,11 @@ const registerUser=async (email, password, role = 'student') => {
     email,
     password:hashedPassword,
     role,
+    studentId,
+    name,
   });
-  const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return { token, role: user.role };
+  const token = jwt.sign({ userId: user.Id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return token;
 };
 
 // Checks if the password added matches the password in the database, then creates a token so that he can be authorized to continue
@@ -32,8 +34,8 @@ const loginUser = async (email, password) => {
     throw new Error('Invalid credentials');
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return { token, role: user.role };
+  const token = jwt.sign({ userId: user.studentId, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return token;
 };
 
 module.exports = {

@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const session = require('express-session');
+const jwt = require('jsonwebtoken');
+const session = require("express-session")
 const sequelize = require('./config/database');  //Ali - Database connection
 const authRoutes = require('./routes/autroutes'); //Ali - Authentication routes
 const authService = require("./services/autservices") //Samuel - Services used to log in
@@ -25,7 +26,7 @@ app.get("/", (req, res) => {
   let username = req.session.token;
   if (username) {
     // Home page content
-    res.render("home", {username: req.session.token}) // Modify as needed
+    res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name}) // Modify as needed
   } else {
     // LogIn page
     res.sendFile(path.join(__dirname, "/views/login.html"));
@@ -41,19 +42,23 @@ app.post("/register", async (req,res)=>{
   let email = req.body.email;
   let password = req.body.password;
   let role = req.body.role;
+  let Id = req.body.Id;
+  let name = req.body.name;
   console.log(req.body.email)
   try {
-    const result = await authService.registerUser(email, password, role);
+    const result = await authService.registerUser(email, password, role, Id, name);
 
-    req.session.token = result.token;
-    req.session.role = result.role;
+    req.session.token = result;
 
-    res.render("loggedIn", { user: req.session.token });
+    let user = jwt.verify(req.session.token, process.env.JWT_SECRET)
+
+    res.render("loggedIn", {user: user.name});
   } catch (error) {
 
     res.status(401).send(error.message);
   }
 })
+
 
 
 app.post("/login", async (req, res) => {
@@ -63,10 +68,11 @@ app.post("/login", async (req, res) => {
   try {
     const result = await authService.loginUser(email, password);
 
-    req.session.token = result.token;
-    req.session.role = result.role;
+    req.session.token = result;
 
-    res.render("loggedIn", {user: req.session.token});
+    let user = jwt.verify(req.session.token, process.env.JWT_SECRET)
+
+    res.render("loggedIn", {user: user.name});
   } catch (error) {
 
     res.status(401).send(error.message);

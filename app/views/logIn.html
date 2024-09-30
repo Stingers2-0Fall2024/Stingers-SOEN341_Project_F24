@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>LogIn</title>
+        <link rel="stylesheet" type="text/css" href="./style.css">
+        <script src="/script.js"></script>
+    </head>
+    <body>
+        <div class="header">
+            <p class = "headerTitle">Something title</p>
+            <table class="headerTable">
+                <th class="headerTh">
+                    <a href="/home" class = "headerLink">Home</a>
+                </th>
+                <th class="headerTh">
+                    <a href="/dashboard" class = "headerLink">Dashboard</a>
+                </th>
+                <th class="headerTh">
+                    <a href="/account" class = "headerLink">Account</a>
+                </th>
+            </table>
+        </div>
+        <div class="divLogIn">
+            <form action="/login/" method="post" class="formLogIn">
+                <input type="text" name="email" placeholder="Enter your username" class="logIn">
+                <input type="password" name="password" placeholder="Enter your password" class="logIn">
+                <input type="submit" value="Log In" style="text-align:center" class="logIn">
+                New user? <a href="/register" style="color: white; font-size: small;">Register here</a>
+            </form>
+        </div>
+        
+    </body>
+</html>

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, NUMBER } = require('sequelize');
 const sequelize = require('../config/database');
 
 // Defining the User structure with Sequelize 
@@ -7,7 +7,7 @@ const User=sequelize.define('User',{
   email: {
     type:DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
   password:{
     type:DataTypes.STRING,
@@ -16,6 +16,15 @@ const User=sequelize.define('User',{
   role: {
     type:DataTypes.ENUM('admin', 'student'),
     defaultValue: 'student',
+  },
+  studentId: {
+    type:DataTypes.STRING(8),
+    allowNull: false,
+    unique: true,
+  },
+  name: {
+    type:DataTypes.STRING,
+    allowNull: false,
   }
 }, {
   timestamps: true,
