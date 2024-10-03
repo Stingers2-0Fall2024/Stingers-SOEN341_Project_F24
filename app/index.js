@@ -3,9 +3,11 @@ const app = express();
 const path = require("path");
 const jwt = require('jsonwebtoken');
 const session = require("express-session")
+const cookies = require("cookie-parser");
 const sequelize = require('./config/database');  //Ali - Database connection
 const authRoutes = require('./routes/autroutes'); //Ali - Authentication routes
-const authService = require("./services/autservices") //Samuel - Services used to log in
+const authService = require("./services/autservices"); //Samuel - Services used to log in
+const cookieParser = require("cookie-parser");
 require('dotenv').config(); // Ali - Loads environment variables
 
 app.set("view engine", "ejs");
@@ -15,29 +17,46 @@ app.use(
     secret: process.env.SECRET_KEY, // This should be stored securely in an environment variable
     resave: false,
     saveUninitialized: true,
+    maxAge: 360000
   })
 );
 
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "/")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
+//This get method is defined for all routes. 
+//Every time someone enters the website
+//they need to login first no matter the path
+app.get("*", (req,res,next)=>{
+  console.log(req.url)
+  if (req.url == "/register"){
+    next();
+  }
   let username = req.session.token;
   if (username) {
-    // Home page content
-    res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name}) // Modify as needed
+    // Redirect to normal website content 
+    next();
   } else {
     // LogIn page
-    res.sendFile(path.join(__dirname, "/views/login.html"));
+    res.cookie("path", req.url);
+    res.render("login");
   }
-});
-
-//For testing purposes
-app.get("/register", (req, res) =>{
-  res.sendFile(path.join(__dirname,"/views/register.html"));
 })
 
+//Send home page as defaut
+app.get("/", (req, res) => {
+    res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name}) // Modify as needed
+});
+
+//Send the register html page to the user
+app.get("/register", (req, res) =>{
+  res.render("register");
+})
+
+//Takes the register form and sends it to the database
+//Then, logs in the user.
 app.post("/register", async (req,res)=>{
   let email = req.body.email;
   let password = req.body.password;
@@ -60,8 +79,9 @@ app.post("/register", async (req,res)=>{
 })
 
 
-
-app.post("/login", async (req, res) => {
+//Takes the login form and compare the email and password to the database
+//Return LoggedIn page for now, in a better implementation, the goal is to have it redirect to the origin path with cookies
+app.post("/login", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
 
@@ -72,19 +92,31 @@ app.post("/login", async (req, res) => {
 
     let user = jwt.verify(req.session.token, process.env.JWT_SECRET)
 
-    res.render("loggedIn", {user: user.name});
+    res.redirect(req.cookies.path);
   } catch (error) {
 
     res.status(401).send(error.message);
   }
 });
 
-app.get("/logout", (req,res)=>{
+app.get("/logout", (req,res, next)=>{
 
   req.session.destroy();
-  res.send("Logout sucess")
+  next();
 })
 
+
+//Send back the dashboard html page
+app.get("/dashboard", (req,res)=>{
+  res.sendFile(path.join(__dirname,"/views/teacher_cabinet.html"));
+})
+
+//
+app.post("/dashboard", (req,res)=>{
+  console.log(req.body);
+  console.log(req.body.teams);
+  res.send(req.body);
+})
 
 
 //Following was added by Ali
