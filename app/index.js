@@ -99,10 +99,14 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
+app.get("/account",(req,res)=>{
+  res.render("account", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name});
+})
+
 app.get("/logout", (req,res, next)=>{
 
   req.session.destroy();
-  next();
+  res.render("login");
 })
 
 
