@@ -159,6 +159,7 @@
                 <td><input type="number" min="1" max="5" value="5"></td>
                 <td><input type="number" min="1" max="5" value="5"></td>
                 <td><input type="number" min="1" max="5" value="5"></td>
+                <td><textarea rows="2" cols="20" placeholder="Add comment"></textarea></td>
             `;
             peerAssessmentTable.appendChild(row);
         });
@@ -173,12 +174,14 @@
             const collaboration = row.querySelector('td:nth-child(2) input').value;
             const communication = row.querySelector('td:nth-child(3) input').value;
             const contribution = row.querySelector('td:nth-child(4) input').value;
+            const comment = row.querySelector('td:nth-child(5) textarea').value;
 
             assessments.push({
                 teammate: team[index].name,
                 collaboration: collaboration,
                 communication: communication,
-                contribution: contribution
+                contribution: contribution,
+                comment: comment
             });
         });
 
