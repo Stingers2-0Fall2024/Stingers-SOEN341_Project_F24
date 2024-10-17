@@ -80,7 +80,7 @@ app.post("/register", async (req,res)=>{
 })
 
 //Takes the login form and compare the email and password to the database
-//Return LoggedIn page for now, in a better implementation, the goal is to have it redirect to the origin path with cookies
+//Then, it logs in the user and send him back to the url he requested
 app.post("/login", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
