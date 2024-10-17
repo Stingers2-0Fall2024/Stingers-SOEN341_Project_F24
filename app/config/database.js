@@ -1,3 +1,4 @@
+//databse.js
 // Done by Ali
 
 // Sequelize is called to interact with databases
@@ -8,4 +9,4 @@ const sequelize=new Sequelize({
   dialect:'sqlite',
   storage:'./database.sqlite' 
 });
-module.exports = sequelize;
+module.exports =sequelize;

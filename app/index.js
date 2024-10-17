@@ -1,12 +1,14 @@
+//index.js
 const express = require("express");
 const app = express();
 const path = require("path");
 const jwt = require('jsonwebtoken');
-const session = require("express-session")
+const session = require("express-session");
 const cookies = require("cookie-parser");
-const sequelize = require('./config/database');  //Ali - Database connection
-const authRoutes = require('./routes/autroutes'); //Ali - Authentication routes
+const sequelize =require('./config/database');  //Ali - Database connection
+const authRoutes= require('./routes/autroutes'); //Ali - Authentication routes
 const authService = require("./services/autservices"); //Samuel - Services used to log in
+const studentCabinetRoutes =require('./routes/studentCabinetRoutes'); // Ali - Student Dashboard 
 const cookieParser = require("cookie-parser");
 require('dotenv').config(); // Ali - Loads environment variables
 
@@ -30,7 +32,7 @@ app.use(express.json());
 //Every time someone enters the website
 //they need to login first no matter the path
 app.get("*", (req,res,next)=>{
-  console.log(req.url)
+  console.log(req.url);
   if (req.url == "/register"){
     next();
   }
@@ -45,13 +47,13 @@ app.get("*", (req,res,next)=>{
   }
 })
 
-//Send home page as defaut
+//Send home page as default
 app.get("/", (req, res) => {
     res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name}) // Modify as needed
 });
 
 //Send the register html page to the user
-app.get("/register", (req, res) =>{
+app.get("/register", (req, res) => {
   res.render("register");
 })
 
@@ -73,11 +75,9 @@ app.post("/register", async (req,res)=>{
 
     res.render("loggedIn", {user: user.name});
   } catch (error) {
-
     res.status(401).send(error.message);
   }
 })
-
 
 //Takes the login form and compare the email and password to the database
 //Return LoggedIn page for now, in a better implementation, the goal is to have it redirect to the origin path with cookies
@@ -99,31 +99,28 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
-app.get("/account",(req,res)=>{
+app.get("/account", (req, res) => {
   res.render("account", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name});
-})
+});
 
-app.get("/logout", (req,res, next)=>{
-
+app.get("/logout", (req, res, next) => {
   req.session.destroy();
   res.render("login");
-})
+});
 
+// Send back the dashboard html page
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "/views/teacher_cabinet.html"));
+});
 
-//Send back the dashboard html page
-app.get("/dashboard", (req,res)=>{
-  res.sendFile(path.join(__dirname,"/views/teacher_cabinet.html"));
-})
-
-//
-app.post("/dashboard", (req,res)=>{
+app.post("/dashboard", (req, res) => {
   console.log(req.body);
   console.log(req.body.teams);
   res.send(req.body);
-})
+});
 
-
-//Following was added by Ali
+// Student Cabinet routes
+app.use('/api/student-cabinet',studentCabinetRoutes);  
 
 // Loads authentication routes (login and registration)
 app.use('/api/auth', authRoutes);
@@ -138,8 +135,8 @@ sequelize.sync()
   });
 
 // Modified by Ali ( so that it is more flexible for environment variables) 
-//Starts the server
+// Starts the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT,()=>{
   console.log(`Server running on port ${PORT}`);
 });
