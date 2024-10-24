@@ -36,7 +36,9 @@ app.get("*", (req,res,next)=>{
   if (req.url == "/register"){
     res.render("register");
   }
-  else{
+  else if (req.url == "/favicon.ico"){
+    res.sendStatus(204);
+  }else{
     let username = req.session.token;
     if (username) {
       // Redirect to normal website content 
