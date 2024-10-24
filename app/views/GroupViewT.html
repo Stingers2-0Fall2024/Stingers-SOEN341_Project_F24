@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group List from CSV</title>
+    <style>
+      /* Style for the entire table */
+      #table-List {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      /* Style for table headers */
+      #table-List th {
+        background-color: #f2f2f2;
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Style for table rows */
+      #table-List td {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Add space below each group */
+      .group-spacing {
+        margin-bottom: 20px; /* Adjust the space between group sections */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Group List</h1>
+    <input type="file" id="csvFileInput" accept=".csv" />
+
+    <table id="table-List">
+      <!-- Group tables will be inserted here -->
+    </table>
+
+    <script>
+      document
+        .getElementById("csvFileInput")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.readAsText(file);
+
+            reader.onload = function (e) {
+              const csv = e.target.result;
+              // Split the CSV content into an array of rows
+              const rows = csv.split("\n");
+              const TableList = document.getElementById("table-List");
+              TableList.innerHTML = ""; // Clear previous table contents
+
+              // Skip the header columns (first columns)
+              for (let i = 1; i < rows.length; i++) {
+                //Splits a row into columns
+                const columns = rows[i].split(",");
+                const groupName = columns[0].trim();
+
+                if (groupName) {
+                  const groupRow = document.createElement("tr");
+                  const groupHeader = document.createElement("th");
+                  // Insert group name into top of the table
+                  groupHeader.textContent = groupName;
+                  groupRow.appendChild(groupHeader);
+                  TableList.append(groupRow);
+
+                  // Creates the criteria
+                  const rating = document.createElement("tr");
+                  rating.innerHTML = `
+                    <th>Group Members</th>
+                    <th>Collaboration</th>
+                    <th>Communication</th>
+                    <th>Contribution</th>
+                  `;
+                  TableList.append(rating);
+
+                  for (let j = 1; j < columns.length; j++) {
+                    // Get name from file
+                    const Name = columns[j].trim();
+
+                    if (Name) {
+                      // Inserts name and grades
+                      const row = document.createElement("tr");
+                      row.innerHTML += `<td>${Name}</td> 
+                      <td>${0}</td> 
+                      <td>${0}</td>
+                      <td>${0}</td>`;
+                      TableList.appendChild(row);
+                    }
+                  }
+                }
+              }
+            };
+            // If the csv read fails
+            reader.onerror = function () {
+              console.error("Could not read the file");
+            };
+          }
+        });
+    </script>
+  </body>
+</html>
