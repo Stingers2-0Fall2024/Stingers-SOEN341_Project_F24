@@ -34,17 +34,19 @@ app.use(express.json());
 app.get("*", (req,res,next)=>{
   console.log(req.url);
   if (req.url == "/register"){
-    next();
+    res.render("register");
   }
-  let username = req.session.token;
-  if (username) {
-    // Redirect to normal website content 
-    next();
-  } else {
-    // LogIn page
-    res.cookie("path", req.url);
-    res.render("login");
-  }
+  else{
+    let username = req.session.token;
+    if (username) {
+      // Redirect to normal website content 
+      next();
+    } else {
+      // LogIn page
+      res.cookie("path", req.url);
+      res.render("login");
+    }}
+  
 })
 
 //Send home page as default
@@ -52,10 +54,6 @@ app.get("/", (req, res) => {
     res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name}) // Modify as needed
 });
 
-//Send the register html page to the user
-app.get("/register", (req, res) => {
-  res.render("register");
-})
 
 //Takes the register form and sends it to the database
 //Then, logs in the user.
