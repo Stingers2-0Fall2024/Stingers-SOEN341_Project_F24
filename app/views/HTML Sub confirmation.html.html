@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm Peer Assessment Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .confirmation-message p {
+            font-size: 18px;
+            color: #333;
+        }
+        .submission-summary {
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        .submission-summary h3 {
+            color: #333;
+        }
+        .summary-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .confirm-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .cancel-button {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Confirm Peer Assessment Submission</h1>
+
+    <!-- Confirmation Message -->
+    <div class="confirmation-message">
+        <p>Are you sure you want to submit your peer assessment?</p>
+    </div>
+
+    <!-- Submission Summary -->
+    <div class="submission-summary">
+        <h3>Submission Summary:</h3>
+        <div class="summary-item">
+            <strong>Evaluator:</strong> <span id="evaluatorName">John Doe</span>
+        </div>
+        <div class="summary-item">
+            <strong>Evaluated Student:</strong> <span id="evaluatedName">Jane Smith</span>
+        </div>
+        <div class="summary-item">
+            <strong>Submission Date:</strong> <span id="submissionDate">October 10, 2024</span>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-container">
+        <button class="confirm-button" onclick="confirmSubmission()">Confirm Submission</button>
+        <button class="cancel-button" onclick="cancelSubmission()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    // Retrieve the names from local storage or a similar source
+    document.getElementById("evaluatorName").textContent = localStorage.getItem("evaluatorName") || "Evaluator Name";
+    document.getElementById("evaluatedName").textContent = localStorage.getItem("evaluatedName") || "Evaluated Student Name";
+    document.getElementById("submissionDate").textContent = new Date().toLocaleDateString();
+
+    // Function to confirm the submission
+    function confirmSubmission() {
+        alert("Your peer assessment has been submitted successfully.");
+        window.location.href = "/submission-success"; // Redirect to the submission success page
+    }
+
+    // Function to cancel the submission
+    function cancelSubmission() {
+        window.location.href = "/peer-assessment"; // Redirect to the peer assessment page
+    }
+</script>
+
+</body>
+</html>
