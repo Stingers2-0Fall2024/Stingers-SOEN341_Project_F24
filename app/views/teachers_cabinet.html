@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Cabinet - Sprint 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .student-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button.add-student {
+            background-color: #007BFF;
+        }
+        button.subtract {
+            background-color: #FF5733;
+        }
+        button.form-team {
+            background-color: #4CAF50;
+        }
+        button.submit-list {
+            background-color: #28A745;
+        }
+        .team-section {
+            margin-top: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        button.save-teams {
+            background-color: #4CAF50;
+        }
+        button.delete-teams {
+            background-color: #FF5733;
+        }
+        .comment-section {
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        button.add-comment {
+            background-color: #28A745;
+        }
+        button.delete-comment {
+            background-color: #FF5733;
+        }
+        button.save-comments {
+            background-color: #28A745;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p class="headerTitle">Something title</p>
+        <table class="headerTable">
+            <th class="headerTh">
+                <a href="/home" class="headerLink">Home</a>
+            </th>
+            <th class="headerTh">
+                <a href="/dashboard" class="headerLink">Dashboard</a>
+            </th>
+            <th class="headerTh">
+                <a href="/account" class="headerLink">Account</a>
+            </th>
+        </table>
+    </div>
+    <div class="container">
+        <h2>Teacher's Cabinet</h2>
+        
+        <div class="student-section">
+            <input type="text" placeholder="Student ID" id="studentId">
+            <input type="text" placeholder="Student Name" id="studentName">
+            <input type="email" placeholder="Student Email" id="studentEmail">
+            <input type="password" placeholder="Student Password" id="studentPassword">
+            <button class="add-student" onclick="addStudent()">Add Student</button>
+            <button class="subtract" onclick="subtractStudent()">Subtract Last Student</button>
+        </div>
+
+        <div class="student-section">
+            <input type="file" id="csvFileInput" accept=".csv" />
+            <button class="submit-list" onclick="submitCSV()">Submit CSV</button>
+        </div>
+
+        <ul id="studentList" style="display: none;"></ul>
+
+        <div class="team-section">
+            <button class="subtract" onclick="deleteSelectedStudents()">Delete Selected Students</button>
+            <button class="form-team" onclick="formTeam()">Form Team with Selected Students</button>
+        </div>
+
+        <h3>Formed Teams</h3>
+        <ul id="teamList"></ul>
+
+        <button class="save-teams" onclick="downloadTeamsCSV()">Save Teams</button>
+        <button class="delete-teams" onclick="deleteSelectedTeams()">Delete Selected Team</button>
+
+        <!-- Comment Section -->
+        <div class="comment-section">
+            <h4>Add a Comment to a Team</h4>
+            <select id="teamSelect">
+                <option value="">Select a Team</option>
+            </select>
+            <textarea id="commentBox" placeholder="Write your comment here..."></textarea>
+            <button class="add-comment" onclick="addComment()">Add Comment</button>
+            <button class="delete-comment" onclick="deleteComment()">Delete Comment</button>
+            <button class="save-comments" onclick="saveComments()">Save Comments</button>
+        </div>
+    </div>
+
+    <script>
+        const studentList = [];
+        const teamList = [];
+        const studentsInTeams = new Set();
+        const comments = {}; // To store comments by team
+
+        // Existing Functions for Student and Team Management
+        function addStudent() {
+            const id = document.getElementById("studentId").value.trim();
+            const name = document.getElementById("studentName").value.trim();
+            const email = document.getElementById("studentEmail").value.trim();
+            const password = document.getElementById("studentPassword").value.trim();
+
+            if (id && name && email && password) {
+                studentList.push({ id, name, email, password });
+                updateStudentList();
+            } else {
+                alert("Please fill out all fields.");
+            }
+        }
+
+        function subtractStudent() {
+            if (studentList.length > 0) {
+                studentList.pop();
+                updateStudentList();
+            } else {
+                alert("No students to remove.");
+            }
+        }
+
+        function deleteSelectedStudents() {
+            const checkboxes = document.querySelectorAll('#studentList input[type="checkbox"]:checked');
+            const indexesToRemove = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            indexesToRemove.sort((a, b) => b - a).forEach(index => {
+                studentList.splice(index, 1);
+            });
+
+            updateStudentList();
+        }
+
+        function formTeam() {
+            const selectedStudents = document.querySelectorAll('#studentList input[type="checkbox"]:checked');
+            const team = Array.from(selectedStudents)
+                               .map(cb => studentList[parseInt(cb.value)])
+                               .filter(student => !studentsInTeams.has(student.id));
+
+            if (team.length > 0) {
+                const teamName = prompt("Enter a name for the new team:");
+                if (teamName) {
+                    teamList.push({ name: teamName, members: team });
+                    team.forEach(student => studentsInTeams.add(student.id));
+                    removeStudentsInTeams();
+                    updateTeamList();
+                }
+            } else {
+                alert("Please select at least one student who is not already in a team.");
+            }
+        }
+
+        function removeStudentsInTeams() {
+            // Remove students from the list who are already in teams
+            const remainingStudents = studentList.filter(student => !studentsInTeams.has(student.id));
+            studentList.length = 0; // Clear the original array
+            remainingStudents.forEach(student => studentList.push(student));
+            updateStudentList();
+        }
+
+        function downloadTeamsCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Team Name,Student Name,Student ID,Student Email\n";
+
+            teamList.forEach(team => {
+                team.members.forEach(member => {
+                    csvContent += `${team.name},${member.name},${member.id},${member.email}\n`;
+                });
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "teams.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function deleteSelectedTeams() {
+            const selectedTeams = document.querySelectorAll('#teamList input[type="checkbox"]:checked');
+            const indexesToRemove = Array.from(selectedTeams).map(cb => parseInt(cb.value));
+
+            indexesToRemove.sort((a, b) => b - a).forEach(index => {
+                teamList.splice(index, 1);
+            });
+
+            studentsInTeams.clear();
+            teamList.forEach(team => {
+                team.members.forEach(student => studentsInTeams.add(student.id));
+            });
+
+            updateTeamList();
+            updateStudentList();
+        }
+
+        function submitCSV() {
+            const fileInput = document.getElementById('csvFileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a CSV file.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const rows = csv.trim().split("\n");
+
+                rows.forEach((row) => {
+                    const [id, name, email, password] = row.split(",");
+                    if (id && name && email && password) {
+                        studentList.push({
+                            id: id.trim(),
+                            name: name.trim(),
+                            email: email.trim(),
+                            password: password.trim()
+                        });
+                    } else {
+                        alert("Invalid data format in CSV row: " + row);
+                    }
+                });
+
+                updateStudentList();
+            };
+
+            reader.onerror = function() {
+                alert("Failed to read file");
+            };
+
+            reader.readAsText(file);
+        }
+
+        function updateStudentList() {
+            const listElement = document.getElementById('studentList');
+            listElement.innerHTML = '';
+
+            if (studentList.length > 0) {
+                listElement.style.display = 'block';
+                studentList.forEach((student, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <input type="checkbox" id="student_${index}" value="${index}">
+                        Name: ${student.name}, Email: ${student.email}, ID: ${student.id}
+                    `;
+                    listElement.appendChild(listItem);
+                });
+            } else {
+                listElement.style.display = 'none';
+            }
+        }
+
+        function updateTeamList() {
+            const listElement = document.getElementById('teamList');
+            listElement.innerHTML = '';
+
+            teamList.forEach((team, teamIndex) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <input type="checkbox" value="${teamIndex}"> 
+                    ${team.name}: ${team.members.map(student => student.name).join(', ')}
+                `;
+                listElement.appendChild(listItem);
+            });
+
+            updateTeamSelect();
+        }
+
+        function updateTeamSelect() {
+            const teamSelect = document.getElementById("teamSelect");
+            teamSelect.innerHTML = '<option value="">Select a Team</option>';
+            teamList.forEach((team, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.text = team.name;
+                teamSelect.appendChild(option);
+            });
+        }
+
+        // New Functions for Comment Section
+        function addComment() {
+            const commentBox = document.getElementById("commentBox");
+            const comment = commentBox.value.trim();
+            const teamSelect = document.getElementById("teamSelect");
+            const selectedTeamIndex = teamSelect.value;
+
+            if (comment && selectedTeamIndex !== "") {
+                const teamName = teamList[selectedTeamIndex].name;
+                if (!comments[teamName]) {
+                    comments[teamName] = [];
+                }
+                comments[teamName].push(comment);
+                commentBox.value = '';
+                alert("Comment added to the selected team.");
+            } else {
+                alert("Please write a comment and select a team.");
+            }
+        }
+
+        function deleteComment() {
+            const commentBox = document.getElementById("commentBox");
+            commentBox.value = '';
+            alert("Comment deleted.");
+        }
+
+        function saveComments() {
+            let txtContent = "Comments for Teams\n\n";
+
+            for (const team in comments) {
+                txtContent += `Team: ${team}\n`;
+                comments[team].forEach((comment, index) => {
+                    txtContent += `  ${index + 1}. ${comment}\n`;
+                });
+                txtContent += "\n";
+            }
+
+            const encodedUri = encodeURI("data:text/plain;charset=utf-8," + txtContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "team_comments.txt");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
