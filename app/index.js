@@ -108,7 +108,12 @@ app.get("/logout", (req, res, next) => {
 
 // Send back the dashboard html page
 app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "/views/teacher_cabinet.html"));
+  if ((jwt.verify(req.session.token, process.env.JWT_SECRET)).role == "admin"){
+    res.sendFile(path.join(__dirname, "/views/teacher_cabinet.html"));
+  }else{
+    res.sendFile(path.join(__dirname, "/views/student_cabinet.html"));
+  }
+  
 });
 
 app.post("/dashboard", (req, res) => {
