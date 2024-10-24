@@ -71,7 +71,7 @@ app.post("/register", async (req,res)=>{
 
     let user = jwt.verify(req.session.token, process.env.JWT_SECRET)
 
-    res.render("home", {user: user.name});
+    res.render("home", {username: (jwt.verify(req.session.token, process.env.JWT_SECRET)).name})
   } catch (error) {
     res.status(401).send(error.message);
   }
