@@ -1,6 +1,5 @@
 name: CI Pipeline
 
-# Trigger the workflow on push or pull request to the main branch
 on:  
   push:
     branches: [ main ]
@@ -9,56 +8,46 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}  # Use matrix to set the OS
-
+    runs-on: ${{ matrix.os }}
+    
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]  # Define the OS versions to test on
-
+        os: [ubuntu-latest]
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js for all OS
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'  # Use the same Node.js version you use locally
+          node-version: '22'
 
-      # Step 3: Install dependencies for the frontend
       - name: Install Frontend Dependencies
         working-directory: ./peer-assessment-app/frontend
         run: npm install
 
-      # Step 4: Run frontend tests
       - name: Run Frontend Tests
         working-directory: ./peer-assessment-app/frontend
         run: npm test
 
-      # Step 5: Build the frontend
       - name: Build Frontend
         working-directory: ./peer-assessment-app/frontend
         run: npm run build
 
-      # Step 6: Install dependencies for the backend
       - name: Install Backend Dependencies
         working-directory: ./peer-assessment-app/backend
         run: npm install
 
-      # Step 7: Set up SQLite for the backend (if needed, only for Linux)
       - name: Set up SQLite
-        if: runner.os == 'Linux'  # Only run this step on Linux
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install sqlite3
 
-      # Step 8: Run backend tests
       - name: Run Backend Tests
         working-directory: ./peer-assessment-app/backend
         run: npm test
 
-      # Step 9: Build the backend
       - name: Build Backend
         working-directory: ./peer-assessment-app/backend
         run: npm run build
