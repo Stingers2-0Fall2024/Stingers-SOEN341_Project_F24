@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./peer-assessment-app/frontend
+        run: npm install
+
+      - name: Run Frontend Tests
+        working-directory: ./peer-assessment-app/frontend
+        run: npm test
+
+      - name: Build Frontend
+        working-directory: ./peer-assessment-app/frontend
+        run: npm run build
+
+      - name: Install Backend Dependencies
+        working-directory: ./peer-assessment-app/backend
+        run: npm install
+
+      - name: Set up SQLite
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install sqlite3
+
+      - name: Run Backend Tests
+        working-directory: ./peer-assessment-app/backend
+        run: npm test
+
+      - name: Build Backend
+        working-directory: ./peer-assessment-app/backend
+        run: npm run build
