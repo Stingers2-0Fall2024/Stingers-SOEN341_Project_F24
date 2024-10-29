@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }} #This is done to have compatibility with other OS's
     
     strategy:
       matrix:
