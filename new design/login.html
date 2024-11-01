@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        /* Fullscreen video styling */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            /*opacity: 0.5;*/
+        }
+
+        /* Center content and lighter overlay */
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.0);
+            /* Reduced overlay opacity */
+            z-index: 1;
+            color: #f1f1f1;
+            flex-direction: column;
+            /* Aligns items vertically */
+        }
+
+        /* Clear Peer Assessment container */
+        .peer-assessment {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: #00FF00;
+            /* Green text */
+            font-size: 30px;
+            margin-bottom: 20px;
+            /* Space between this and the form */
+            width: 100%;
+            max-width: 350px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #E0E0E0;
+            background-color: #121212;
+            overflow: hidden;
+        }
+
+        /* Form styling with centered layout */
+        form {
+            background: linear-gradient(145deg, #333333, #444444);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+            max-width: 350px;
+            width: 100%;
+            text-align: left;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            color: #B0B0B0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #B0B0B0;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 15px 0 5px;
+        }
+
+        /* Input fields */
+        input[type="email"],
+        input[type="password"] {
+            width: 94%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #555555;
+            border-radius: 8px;
+            background-color: #222222;
+            color: #E0E0E0;
+            font-size: 16px;
+            padding-left: 8px;
+        }
+
+        /* Button styling with hover effect */
+        input[type="submit"] {
+            background: linear-gradient(145deg, #444444, #555555);
+            color: #FFFFFF;
+            border: none;
+            padding: 12px;
+            width: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 0 auto;
+            /* Centers the button horizontally */
+            display: block;
+            /* Ensures margin auto works on the button */
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        
+    </style>
+    <script>
+        const users = [
+            { email: "john.doe@concordia.ca", password: "john123", role: "student", id: 1, name: "John Doe" },
+            { email: "jane.smith@concordia.ca", password: "jane123", role: "student", id: 2, name: "Jane Smith" },
+            { email: "sam.wilson@concordia.ca", password: "sam123", role: "student", id: 3, name: "Sam Wilson" },
+            { email: "linda.johnson@concordia.ca", password: "linda123", role: "student", id: 4, name: "Linda Johnson" },
+            { email: "paul.adams@concordia.ca", password: "paul123", role: "student", id: 5, name: "Paul Adams" },
+            { email: "emily.brown@concordia.ca", password: "emily123", role: "student", id: 6, name: "Emily Brown" },
+            { email: "michael.green@concordia.ca", password: "michael123", role: "student", id: 7, name: "Michael Green" },
+            { email: "susan.white@concordia.ca", password: "susan123", role: "student", id: 8, name: "Susan White" },
+            { email: "robert.black@concordia.ca", password: "robert123", role: "student", id: 9, name: "Robert Black" },
+            { email: "lisa.gray@concordia.ca", password: "lisa123", role: "student", id: 10, name: "Lisa Gray" },
+            { email: "instructor@concordia.ca", password: "instructor123", role: "instructor", id: 11, name: "Instructor" }
+        ];
+
+
+
+        function validateLogin() {
+            const enteredEmail = document.getElementById("email").value;
+            const enteredPassword = document.getElementById("password").value;
+
+            const user = users.find(u => u.email === enteredEmail && u.password === enteredPassword);
+
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                saveEmail(enteredEmail);
+
+                if (user.role === "student") {
+                    window.location.href = "student_dashboard.html";
+                } else if (user.role === "instructor") {
+                    window.location.href = "instructor_dashboard.html";
+                }
+            } else {
+                document.getElementById("loginResult").textContent = "Invalid credentials. Please try again.";
+            }
+        }
+
+        // Track the visibility state of the video
+        let isVideoVisible = false;
+
+        function toggleVideoVisibility() {
+            const video = document.getElementById("backgroundVideo");
+
+            // Toggle the video’s visibility
+            if (isVideoVisible) {
+                video.style.display = "none"; // Hide the video
+                video.pause(); // Pause video when hidden
+            } else {
+                video.style.display = "block"; // Show the video
+                video.play(); // Start playback when visible
+            }
+
+            isVideoVisible = !isVideoVisible; // Update visibility state
+            //video.playbackRate = 0.5;
+        }
+
+
+        function saveEmail(email) {
+            let emails = JSON.parse(localStorage.getItem('savedEmails')) || [];
+            if (!emails.includes(email)) {
+                emails.push(email);
+                localStorage.setItem('savedEmails', JSON.stringify(emails));
+            }
+        }
+
+        function loadEmailSuggestions() {
+            const emailDatalist = document.getElementById("email-list");
+            const savedEmails = JSON.parse(localStorage.getItem('savedEmails')) || [];
+
+            emailDatalist.innerHTML = "";  // Clear existing options
+
+            savedEmails.forEach(email => {
+                const option = document.createElement("option");
+                option.value = email;
+                emailDatalist.appendChild(option);
+            });
+        }
+
+
+        document.addEventListener("DOMContentLoaded", loadEmailSuggestions);
+    </script>
+</head>
+
+<body>
+    <!-- Background video hidden initially -->
+    <video id="backgroundVideo" autoplay muted loop class="video-background" style="display: none;">
+        <source src="4K Space_Star scene - Free M.G Stock Footage.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    
+    <!-- Login Form in Centered Container -->
+    <div class="content">
+        <!-- "Peer Assessment" title with click event to toggle video visibility -->
+        <div class="peer-assessment" onclick="toggleVideoVisibility()">Peer Assessment</div>
+        <form onsubmit="event.preventDefault(); validateLogin();">
+            <h2>Login page</h2>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" list="email-list" required>
+            <datalist id="email-list"></datalist> <!-- Datalist for email suggestions -->
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <input type="submit" value="Login">
+            <p id="loginResult" style="color: red;"></p>
+        </form>
+    </div>
+</body>
+
+</html>
