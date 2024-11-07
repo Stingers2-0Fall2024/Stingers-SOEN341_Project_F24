@@ -25,3 +25,6 @@ app.listen(port, () => console.log(`Server running on port ${port}`));
 
 const availabilityRoutes = require('./routes/availabilityRoutes');
 app.use('/api/availability', availabilityRoutes);
+
+
+// Main menu redirection can be added from REACT frontend, so waiting to see if it was added before I proceed
