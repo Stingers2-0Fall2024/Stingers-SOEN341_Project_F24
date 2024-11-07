@@ -52,4 +52,28 @@ router.get('/allAssessments', (req, res) => {
   });
 });
 
+// Route to get a summary of peer assessments
+router.get('/summary', (req, res) => {
+  const query = `
+    SELECT
+      a.teammate_id AS student_id,
+      u.name AS student_name,
+      AVG(a.cooperation) AS avg_cooperation,
+      AVG(a.conceptual_contribution) AS avg_conceptual_contribution,
+      AVG(a.practical_contribution) AS avg_practical_contribution,
+      AVG(a.work_ethic) AS avg_work_ethic
+    FROM assessments a
+    INNER JOIN users u ON a.teammate_id = u.id
+    GROUP BY a.teammate_id, u.name;
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching summary:', err);
+      return res.status(500).json({ error: 'An error occurred while fetching the summary.' });
+    }
+    res.json({ summary: rows });
+  });
+});
+
 module.exports = router;
