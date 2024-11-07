@@ -22,3 +22,6 @@ app.use('/api/teams', teamRoutes);
 
 const port = process.env.PORT || 5001;
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+const availabilityRoutes = require('./routes/availabilityRoutes');
+app.use('/api/availability', availabilityRoutes);
