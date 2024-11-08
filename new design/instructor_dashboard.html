@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard</title>
+    <link rel="stylesheet" href="instructorStyle.css"> 
+    <script src="instructorScript.js" defer></script> 
+
+    <style>
+    </style>
+
+    <script>
+    </script>
+
+</head>
+
+<body>
+    <!-- Background video -->
+    <video id="backgroundVideo" autoplay muted loop class="video-background">
+        <source src="4K Space_Star scene - Free M.G Stock Footage.mp4" type="video/mp4">
+    </video>
+
+    <!-- Center Wrapper -->
+    <div class="center-wrapper">
+        <!-- Dashboard Title and Navigation Buttons -->
+        <div class="main-container">
+            <h2>Instructor Dashboard</h2>
+            <div class="navigation">
+                <button class="nav-button" onclick="loadContent('students')">Manage Students</button>
+                <button class="nav-button" onclick="loadContent('teams')">Manage Teams</button>
+                <button class="nav-button" onclick="loadContent('peerAssessments')">Peer Assessments</button>
+                <button class="nav-button" onclick="loadContent('search')">Search</button>
+                <button class="nav-button" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="content-area" class="content-area">
+                <h3>Welcome to the Instructor Dashboard</h3>
+                <p>Select an option above to manage students and teams.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

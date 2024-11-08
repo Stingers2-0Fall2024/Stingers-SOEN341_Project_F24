@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="studentStyle.css"> 
+    <script src="studentScript.js" defer></script>  
+
+    <style></style>
+    <script></script>
+</head>
+
+<body>
+    <!-- Background video -->
+    <video id="backgroundVideo" autoplay muted loop class="video-background">
+        <source src="4K Space_Star scene - Free M.G Stock Footage.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Center Wrapper -->
+    <div class="center-wrapper">
+        <!--<div class="peer-assessment" onclick="toggleVideoVisibility()">Peer Assessment</div> -->
+
+
+        <div class="main-container">
+            <h2>Student Dashboard</h2>
+            <div class="navigation">
+                <button class="nav-button" onclick="loadContent('yourTeam')">Your Team</button>
+                <button class="nav-button" onclick="loadContent('availability')">Availability</button>
+                <button class="nav-button" onclick="loadContent('peerAssessment')">Peer Assessment</button>
+                <button class="nav-button" onclick="loadContent('Feedback')">Peer Feedback</button>
+                <button class="nav-button" onclick="loadContent('teacherInstructions')">Instructions</button>
+                <button class="nav-button" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+
+            <!-- Scrollable Content Area -->
+            <div id="content-area" class="content-area">
+                <h3>Welcome to the Student Cabinet</h3>
+                <p>Select a section above to view content.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
