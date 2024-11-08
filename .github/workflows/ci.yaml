@@ -1,106 +1,53 @@
-project:
-  name: Peer Assessment System
-  description: A system for managing peer assessments, teams, and availability for students and instructors.
-  files:
-    - instructor_dashboard.html
-    - instructorScript.js
-    - instructorStyle.css
-    - login.html
-    - loginScript.js
-    - loginStyle.css
-    - student_dashboard.html
-    - studentScript.js
-    - studentStyle.css
+name: CI Pipeline
 
-pages:
-  - name: Login Page
-    path: login.html
-    script: loginScript.js
-    style: loginStyle.css
-    components:
-      - video_background: true
-      - form:
-          fields:
-            - email: { type: email, required: true }
-            - password: { type: password, required: true }
-          submit_action: validateLogin
-      - message: loginResult
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-  - name: Instructor Dashboard
-    path: instructor_dashboard.html
-    script: instructorScript.js
-    style: instructorStyle.css
-    components:
-      - video_background: true
-      - navigation:
-          buttons:
-            - label: Manage Students
-              action: loadContent("students")
-            - label: Manage Teams
-              action: loadContent("teams")
-            - label: Peer Assessments
-              action: loadContent("peerAssessments")
-            - label: Search
-              action: loadContent("search")
-            - label: Logout
-              action: window.location.href="login.html"
-      - content_area: content-area
+jobs:
+  build:
+    runs-on: ${{ matrix.os }} #This is done to have compatibility with other OS's
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  - name: Student Dashboard
-    path: student_dashboard.html
-    script: studentScript.js
-    style: studentStyle.css
-    components:
-      - video_background: true
-      - navigation:
-          buttons:
-            - label: Your Team
-              action: loadContent("yourTeam")
-            - label: Availability
-              action: loadContent("availability")
-            - label: Peer Assessment
-              action: loadContent("peerAssessment")
-            - label: Peer Feedback
-              action: loadContent("Feedback")
-            - label: Instructions
-              action: loadContent("teacherInstructions")
-            - label: Logout
-              action: window.location.href="login.html"
-      - content_area: content-area
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-assets:
-  video_background:
-    path: "4K Space_Star scene - Free M.G Stock Footage.mp4"
-    attributes:
-      autoplay: true
-      muted: true
-      loop: true
+      - name: Install Frontend Dependencies
+        working-directory: ./peer-assessment-app/frontend
+        run: npm install
 
-scripts:
-  - name: instructorScript.js
-    actions:
-      - loadContent
-      - setActiveButton
-      - performSearch
-      - toggleVideoVisibility
-      - addStudent
-      - deleteStudent
-      - createTeam
-      - displayEvaluations
-      - showStudentReviews
+      - name: Run Frontend Tests
+        working-directory: ./peer-assessment-app/frontend
+        run: npm test
 
-  - name: studentScript.js
-    actions:
-      - loadContent
-      - displayStudentTeam
-      - displayPeerAssessmentForm
-      - saveEvaluation
-      - displayFeedbackDashboard
-      - displayPeerReviewsForCurrentUser
-      - calculateAggregatedFeedback
-      - showAvailabilityView
+      - name: Build Frontend
+        working-directory: ./peer-assessment-app/frontend
+        run: npm run build
 
-styles:
-  - instructorStyle.css
-  - studentStyle.css
-  - loginStyle.css
+      - name: Install Backend Dependencies
+        working-directory: ./peer-assessment-app/backend
+        run: npm install
+
+      - name: Set up SQLite
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install sqlite3
+
+      - name: Run Backend Tests
+        working-directory: ./peer-assessment-app/backend
+        run: npm test
+
+      - name: Build Backend
+        working-directory: ./peer-assessment-app/backend
+        run: npm run build
