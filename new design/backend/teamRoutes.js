@@ -1,48 +1,65 @@
 const express = require('express');
 const db = require('../database/db');
 const authMiddleware = require('../middlewares/authMiddleware');
-const roleMiddleware = require('../middlewares/roleMiddleware');
 const router = express.Router();
 
 // Create a new team
-router.post('/', authMiddleware, roleMiddleware('instructor'), (req, res) => {
-    const { teamName, memberIds } = req.body;
+router.post('/', authMiddleware, (req, res) => {
+    const { teamName, members } = req.body;
 
-    db.run(`INSERT INTO teams (teamName) VALUES (?)`, [teamName], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        const teamId = this.lastID;
+    if (!teamName || !members || !members.length) {
+        return res.status(400).json({ message: 'Team name and members are required.' });
+    }
 
-        const placeholders = memberIds.map(() => '(?, ?)').join(', ');
-        const values = memberIds.flatMap((id) => [teamId, id]);
-
-        db.run(`INSERT INTO team_members (teamId, userId) VALUES ${placeholders}`, values, (err) => {
+    db.run(
+        `INSERT INTO teams (teamName) VALUES (?)`,
+        [teamName],
+        function (err) {
             if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ teamId });
-        });
-    });
+
+            const teamId = this.lastID;
+
+            // Insert team members
+            const placeholders = members.map(() => '(?, ?)').join(', ');
+            const values = members.flatMap(member => [teamId, member.id]);
+
+            db.run(
+                `INSERT INTO team_members (teamId, userId) VALUES ${placeholders}`,
+                values,
+                (err) => {
+                    if (err) return res.status(500).json({ error: err.message });
+                    res.status(201).json({ message: 'Team created successfully.' });
+                }
+            );
+        }
+    );
 });
 
 // Get all teams
 router.get('/', authMiddleware, (req, res) => {
     db.all(
-        `SELECT teams.id, teams.teamName, users.id AS userId, users.name AS userName
+        `SELECT teams.id AS teamId, teams.teamName, users.id AS memberId, users.name AS memberName
          FROM teams
          LEFT JOIN team_members ON teams.id = team_members.teamId
          LEFT JOIN users ON team_members.userId = users.id`,
-        [],
         (err, rows) => {
             if (err) return res.status(500).json({ error: err.message });
 
             const teams = rows.reduce((acc, row) => {
-                const team = acc.find((t) => t.id === row.id);
+                const team = acc.find(t => t.teamId === row.teamId);
                 if (team) {
-                    team.members.push({ id: row.userId, name: row.userName });
+                    team.members.push({ id: row.memberId, name: row.memberName });
                 } else {
-                    acc.push({ id: row.id, teamName: row.teamName, members: [{ id: row.userId, name: row.userName }] });
+                    acc.push({
+                        teamId: row.teamId,
+                        teamName: row.teamName,
+                        members: row.memberId ? [{ id: row.memberId, name: row.memberName }] : []
+                    });
                 }
                 return acc;
             }, []);
-            res.json(teams);
+
+            res.status(200).json(teams);
         }
     );
 });
