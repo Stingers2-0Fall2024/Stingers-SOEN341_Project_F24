@@ -15,21 +15,24 @@ jobs:
         os: [ubuntu-latest]  # Specify OS for compatibility
     
     steps:
-      # Step 1: Check out code
+      # Check out code
       - name: Checkout Code
         uses: actions/checkout@v3  # Updated to v3 for latest compatibility
 
-      # Step 2: Set up Node.js environment
+      # Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v4  # Updated to v4
         with:
           node-version: '22'  # Using Node.js 22 as specified
 
-      # Frontend Setup and Build
-      - name: Install Frontend Dependencies
-        working-directory: ./new design
-        run: npm install
+      # Install Jest as a dev dependency
+      - name: Install Jest and dependencies
+        working-directory: ./new design  # Assuming this is the correct directory for Jest
+        run: |
+          npm install
+          npm install --save-dev jest  # Adds Jest as a dev dependency if not already installed
 
+      # Run Frontend Tests
       - name: Run Frontend Tests
         working-directory: ./new design
         run: npm test
