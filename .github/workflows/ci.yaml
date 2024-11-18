@@ -23,19 +23,19 @@ jobs:
           node-version: '22'
 
       - name: Install Frontend Dependencies
-        working-directory: ./peer-assessment-app/frontend
+        working-directory: ./new design
         run: npm install
 
       - name: Run Frontend Tests
-        working-directory: ./peer-assessment-app/frontend
+        working-directory: ./new design
         run: npm test
 
       - name: Build Frontend
-        working-directory: ./peer-assessment-app/frontend
+        working-directory: ./new design
         run: npm run build
 
       - name: Install Backend Dependencies
-        working-directory: ./peer-assessment-app/backend
+        working-directory: ./new design/backend
         run: npm install
 
       - name: Set up SQLite
@@ -45,9 +45,9 @@ jobs:
           sudo apt-get install sqlite3
 
       - name: Run Backend Tests
-        working-directory: ./peer-assessment-app/backend
+        working-directory: ./new design/backend
         run: npm test
 
       - name: Build Backend
-        working-directory: ./peer-assessment-app/backend
+        working-directory: ./new design/backend
         run: npm run build
