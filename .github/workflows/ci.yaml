@@ -17,17 +17,17 @@ jobs:
     steps:
       # Check out code
       - name: Checkout Code
-        uses: actions/checkout@v3  # Updated to v3 for latest compatibility
+        uses: actions/checkout@v3
 
       # Set up Node.js environment
       - name: Set up Node.js
-        uses: actions/setup-node@v4  # Updated to v4
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'  # Using Node.js 22 as specified
+          node-version: '22'
 
       # Install Jest as a dev dependency
       - name: Install Jest and dependencies
-        working-directory: ./new design  # Assuming this is the correct directory for Jest
+        working-directory: ./new design
         run: |
           npm install
           npm install --save-dev jest  # Adds Jest as a dev dependency if not already installed
