@@ -1,27 +1,31 @@
 name: CI Pipeline
 
-on:  
+on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }} #This is done to have compatibility with other OS's
+    runs-on: ${{ matrix.os }}
     
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest]  # Specify OS for compatibility
+    
     steps:
+      # Step 1: Check out code
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Updated to v3 for latest compatibility
 
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4  # Updated to v4
         with:
-          node-version: '22'
+          node-version: '22'  # Using Node.js 22 as specified
 
+      # Frontend Setup and Build
       - name: Install Frontend Dependencies
         working-directory: ./new design
         run: npm install
@@ -34,6 +38,7 @@ jobs:
         working-directory: ./new design
         run: npm run build
 
+      # Backend Setup and Build
       - name: Install Backend Dependencies
         working-directory: ./new design/backend
         run: npm install
@@ -42,7 +47,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install sqlite3
+          sudo apt-get install -y sqlite3
 
       - name: Run Backend Tests
         working-directory: ./new design/backend
