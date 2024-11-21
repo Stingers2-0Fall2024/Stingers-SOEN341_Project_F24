@@ -6,10 +6,14 @@ const html = fs.readFileSync(path.resolve(__dirname, './instructor_dashboard.htm
 let dom;
 let document;
 
-beforeAll(() => {
-  // Set up a shared JSDOM instance
+beforeAll((done) => {
   dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable' });
   document = dom.window.document;
+
+  // Mock window.onload to ensure the DOM and scripts are fully loaded
+  jest.spyOn(dom.window, 'onload').mockImplementation(() => {
+    setTimeout(() => done(), 100); // Add a small delay to simulate loading time
+  });
 });
 
 beforeEach(() => {
