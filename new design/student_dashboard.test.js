@@ -6,12 +6,12 @@ const html = fs.readFileSync(path.resolve(__dirname, './student_dashboard.html')
 let dom;
 let document;
 
-beforeAll((done) => {
-  dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable' });
-  document = dom.window.document;
+beforeEach(() => {
+  localStorage.clear(); // Resets localStorage before each test
+});
 
-  // Wait for all resources and scripts to load
-  dom.window.onload = () => done();
+afterEach(() => {
+  jest.restoreAllMocks(); // Cleans up mocks to prevent cross-test contamination
 });
 
 describe('Student Dashboard', () => {
@@ -21,14 +21,12 @@ describe('Student Dashboard', () => {
   });
 
   test('Displays team when "Your Team" is clicked', () => {
-    // Simulate clicking the "Your Team" button
     const yourTeamButton = document.querySelector('.nav-button');
     yourTeamButton.click();
-
-    // Check if the team information is displayed
     const contentArea = document.getElementById('content-area');
     expect(contentArea.innerHTML).toContain('Your Team');
   });
+});
 
   test('Can save a peer assessment', () => {
     // Mock current user data in localStorage
