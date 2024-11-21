@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-jest.mock('./db', () => ({
+jest.mock('../config/db', () => ({
   getUser: jest.fn(),
 }));
 
