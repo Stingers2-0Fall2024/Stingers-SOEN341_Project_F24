@@ -1,7 +1,8 @@
 const db = require('../config/db');
 
-jest.mock('../config/db', () => ({
+jest.mock('../path/to/db', () => ({
   getUser: jest.fn(),
+  addUser: jest.fn(),
 }));
 
 test('getUser should return user data', async () => {
