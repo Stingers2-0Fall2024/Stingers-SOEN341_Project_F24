@@ -6,12 +6,20 @@ const html = fs.readFileSync(path.resolve(__dirname, './student_dashboard.html')
 let dom;
 let document;
 
+beforeAll(() => {
+  // Set up a shared JSDOM instance
+  dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable' });
+  document = dom.window.document;
+});
+
 beforeEach(() => {
-  localStorage.clear(); // Resets localStorage before each test
+  // Clear localStorage before each test
+  localStorage.clear();
 });
 
 afterEach(() => {
-  jest.restoreAllMocks(); // Cleans up mocks to prevent cross-test contamination
+  // Restore mocks after each test
+  jest.restoreAllMocks();
 });
 
 describe('Student Dashboard', () => {
