@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --updateSnapshot",
-    "test:watch": "jest --watch",
-    "build": "webpack --mode production"
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "Stingers",
