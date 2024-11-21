@@ -1,2 +1,2 @@
-require('jest-localstorage-mock');
-require('text-encoding');
+global.TextEncoder = require('util').TextEncoder;
+global.TextDecoder = require('util').TextDecoder;
