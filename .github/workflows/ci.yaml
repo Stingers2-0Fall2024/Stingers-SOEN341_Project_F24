@@ -23,7 +23,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '18'
 
       # Install Jest as a dev dependency
       - name: Install Jest and dependencies
@@ -35,6 +35,8 @@ jobs:
       # Run Frontend Tests
       - name: Run Frontend Tests
         working-directory: ./new design
+        env:
+          NODE_ENV: test
         run: npm test
 
       - name: Build Frontend
