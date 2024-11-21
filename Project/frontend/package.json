@@ -7,7 +7,7 @@
         "start": "react-scripts start",
         "test": "jest --updateSnapshot",
         "test:watch": "jest --watch",
-        "build": "react-scripts build"
+        "build": "echo 'No build step required for vanilla JavaScript'"
     },
     "dependencies": {},
     "devDependencies": {
