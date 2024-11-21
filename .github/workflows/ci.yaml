@@ -25,27 +25,24 @@ jobs:
         with:
           node-version: '18'
 
-      # Install Jest as a dev dependency
-      - name: Install Jest and dependencies
-        working-directory: ./new design
-        run: |
-          npm install
-          npm install --save-dev jest  # Adds Jest as a dev dependency if not already installed
+      # Frontend Tests and Build
+      - name: Install Frontend Dependencies
+        working-directory: ./Project/frontend
+        run: npm install
 
-      # Run Frontend Tests
       - name: Run Frontend Tests
-        working-directory: ./new design
+        working-directory: ./Project/frontend
         env:
           NODE_ENV: test
         run: npm test
 
       - name: Build Frontend
-        working-directory: ./new design
+        working-directory: ./Project/frontend
         run: npm run build
 
-      # Backend Setup and Build
+      # Backend Tests and Setup
       - name: Install Backend Dependencies
-        working-directory: ./new design/backend
+        working-directory: ./Project/backend
         run: npm install
 
       - name: Set up SQLite
@@ -55,9 +52,9 @@ jobs:
           sudo apt-get install -y sqlite3
 
       - name: Run Backend Tests
-        working-directory: ./new design/backend
+        working-directory: ./Project/backend
         run: npm test
 
       - name: Build Backend
-        working-directory: ./new design/backend
+        working-directory: ./Project/backend
         run: npm run build
