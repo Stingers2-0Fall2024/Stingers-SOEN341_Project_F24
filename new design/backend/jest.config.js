@@ -1,5 +1,5 @@
 module.exports = {
-  testEnvironment: 'node', // Use Node.js environment for backend testing
-  testMatch: ['<rootDir>/backend/**/*.test.js'],
-  coverageDirectory: './coverage', // Generate coverage reports in the 'coverage' folder
+  testEnvironment: 'node',
+  testMatch: ['<rootDir>/backend/**/*.test.js'], // Match test files in any directory under backend
+  coverageDirectory: './coverage', // Save coverage reports
 };
