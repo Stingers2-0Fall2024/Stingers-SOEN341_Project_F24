@@ -6,12 +6,20 @@ const html = fs.readFileSync(path.resolve(__dirname, './instructor_dashboard.htm
 let dom;
 let document;
 
-beforeAll((done) => {
+beforeAll(() => {
+  // Set up a shared JSDOM instance
   dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable' });
   document = dom.window.document;
+});
 
-  // Wait for all resources and scripts to load
-  dom.window.onload = () => done();
+beforeEach(() => {
+  // Clear localStorage before each test
+  localStorage.clear();
+});
+
+afterEach(() => {
+  // Restore mocks after each test
+  jest.restoreAllMocks();
 });
 
 describe('Instructor Dashboard', () => {
