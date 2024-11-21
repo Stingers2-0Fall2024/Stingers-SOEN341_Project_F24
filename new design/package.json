@@ -17,6 +17,6 @@
     "jsdom": "^25.0.1"
   },
   "jest": {
-    "setupFiles": ["<rootDir>/jest.setup.js"]
+    "setupFiles": ["./jest.setup.js"]
   }
 }
