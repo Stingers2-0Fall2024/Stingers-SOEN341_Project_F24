@@ -1,8 +1,8 @@
-const { validateToken } = require('../middlewares/authMiddleware');
+const jwt = require('jsonwebtoken');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 
 test('should call next() if token is valid', () => {
-  const token = jwt.sign({ username: 'test' }, 'your_secret_key'); // Use your test key here
+  const token = jwt.sign({ username: 'test' }, 'your_secret_key'); // Mock token
   const req = { headers: { authorization: token } };
   const res = {};
   const next = jest.fn();
