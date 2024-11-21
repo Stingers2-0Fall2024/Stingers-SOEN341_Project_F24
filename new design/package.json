@@ -4,7 +4,8 @@
   "description": "Peer Assessment App",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"     // Runs tests in watch mode for local development
   },
   "keywords": [],
   "author": "Stingers",
