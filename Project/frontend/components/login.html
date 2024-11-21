@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="loginStyle.css"> 
+    <script src="loginScript.js" defer></script> 
+
+    <style>
+    </style>
+
+    <script>
+    </script>
+</head>
+
+<body>
+    <!-- Background video hidden initially -->
+    <video id="backgroundVideo" autoplay muted loop class="video-background">
+        <source src="4K Space_Star scene - Free M.G Stock Footage.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    
+    <!-- Login Form in Centered Container -->
+    <div class="content">
+        <!-- "Peer Assessment" title with click event to toggle video visibility -->
+        <div class="peer-assessment" onclick="toggleVideoVisibility()">Peer Assessment</div>
+        <form onsubmit="event.preventDefault(); validateLogin();">
+            <h2>Login page</h2>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" list="email-list" required>
+            <datalist id="email-list"></datalist> <!-- Datalist for email suggestions -->
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <input type="submit" value="Login">
+            <p id="loginResult" style="color: red;"></p>
+        </form>
+    </div>
+</body>
+
+</html>
