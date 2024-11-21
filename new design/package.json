@@ -17,6 +17,7 @@
     "jsdom": "^25.0.1"
   },
   "jest": {
-    "setupFiles": ["./jest.setup.js"]
+    "setupFiles": ["./jest.setup.js"],
+    "testEnvironment": "jsdom"                // Ensures compatibility with DOM-based tests
   }
 }
