@@ -4,7 +4,7 @@
   "description": "Peer Assessment App",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --updateSnapshot",
     "test:watch": "jest --watch"
   },
   "keywords": [],
