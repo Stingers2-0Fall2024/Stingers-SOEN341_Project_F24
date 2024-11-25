@@ -81,8 +81,10 @@ router.get('/aggregated', authMiddleware, (req, res) => {
                 return res.status(500).json({ error: 'Failed to fetch aggregated scores.' });
             }
 
-            if (!row || !row.avgCooperation) {
-                return res.status(404).json({ message: 'No aggregated scores available.' });
+            if (!row) {
+                if(!row.avgCooperation){
+                    return res.status(404).json({ message: 'No aggregated scores available for this student.' });
+                }
             }
 
             res.status(200).json(row);
