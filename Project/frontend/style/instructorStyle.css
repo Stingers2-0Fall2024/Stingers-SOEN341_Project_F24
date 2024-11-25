@@ -152,6 +152,7 @@
      /* Consistent width */
      transition: color 0.3s, box-shadow 0.3s;
      /* Smooth transition for text color and shadow */
+     height: 28px;
  }
 
  /* Hover effect: green text and shadow */
@@ -163,10 +164,6 @@
      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
  }
 
- /* Consistent small button height */
- .action-button {
-     height: 28px;
- }
 
  /* Style for the checkbox */
  input[type="checkbox"] {
