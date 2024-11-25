@@ -73,8 +73,10 @@ router.get('/aggregate/:studentId', authMiddleware, (req, res) => {
             }
 
             // If no evaluations found
-            if (!(row && row.avgCooperation)) {
-                return res.status(404).json({ message: 'No aggregated scores available for this student.' });
+            if (!row) {
+                if(!row.avgCooperation){
+                    return res.status(404).json({ message: 'No aggregated scores available for this student.' });
+                }
             }
 
             res.status(200).json(row);
