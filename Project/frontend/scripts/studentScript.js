@@ -198,26 +198,6 @@
         }
 
 
-        // Display ratings
-        function generateRatingSliders(savedEvaluation) {
-            const dimensions = ["Cooperation", "Conceptual Contribution", "Practical Contribution", "Work Ethic"];
-            return `
-        <div class="ratings-container" style="flex-grow: 1;">
-            ${dimensions.map(dimension => `
-                <div class="rating-row">
-                    <label class="rating-label">${dimension}:</label>
-                    <div class="slider-container">
-                        <input type="range" min="1" max="5" value="${savedEvaluation[dimension] || 1}" 
-                               id="${dimension}-slider" 
-                               oninput="this.nextElementSibling.textContent = this.value">
-                        <span class="rating-value">${savedEvaluation[dimension] || 1}</span>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-        }
-
         // Display textarea
         function generateFeedbackTextarea(savedEvaluation) {
             return `
