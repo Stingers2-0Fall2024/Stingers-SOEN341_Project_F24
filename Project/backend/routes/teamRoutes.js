@@ -7,7 +7,10 @@ const router = express.Router();
 router.post('/', authMiddleware, (req, res) => {
     const { teamName, members } = req.body;
 
-    if (!teamName || !members || !members.length) {
+    if (!teamName || !members) {
+        return res.status(400).json({ message: 'Team name and members are required.' });
+    }
+    if(!members.length){
         return res.status(400).json({ message: 'Team name and members are required.' });
     }
 
