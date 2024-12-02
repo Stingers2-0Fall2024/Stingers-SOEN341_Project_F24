@@ -16,9 +16,15 @@
 ## Backend: ExpressJs
 ## Database: SQL lite 
 # Credit
-## Joe Valcourt : Developer
+## Joe Valcourt : Developer 
+## Gethub id: joepro9096
 ## Ali Mcheick : Developer
+## Gethub id: Sh33z
 ## Samuel Vachon : Developer, Owner
+## Gethub id: SamuelVachon
 ## Faisal Quraishi : Developer
+## Gethub id: Faisal2108
 ## Vladimir Shterenkiker : Developer
+## Gethub id: VladShteren
 ## Reuven Minciotti : Developer
+## Gethub id: Reuven01
